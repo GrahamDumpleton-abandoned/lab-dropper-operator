@@ -1,0 +1,36 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: frontend-plus-database
+parameters:
+- name: NAME
+  value: myapplication
+- name: DATABASE_PASSWORD
+  from: '[a-zA-Z0-9]{16}'
+  generate: expression
+  required: true
+objects:
+- kind: TemplateBinding
+  apiVersion: homeroom.openshift.dev/v1
+  metadata:
+    name: ${NAME}-frontend
+  spec:
+    template:
+      mongodb-ephemeral
+    parameters:
+    - name: DATABASE_SERVICE_NAME
+      value: ${NAME}-frontend
+    - name: MONGODB_PASSWORD
+      value: ${DATABASE_PASSWORD}
+- kind: TemplateBinding
+  apiVersion: homeroom.openshift.dev/v1
+  metadata:
+    name: ${NAME}-backend
+  spec:
+    template:
+      mongodb-ephemeral
+    parameters:
+    - name: DATABASE_SERVICE_NAME
+      value: ${NAME}-database
+    - name: MONGODB_PASSWORD
+      value: ${DATABASE_PASSWORD}

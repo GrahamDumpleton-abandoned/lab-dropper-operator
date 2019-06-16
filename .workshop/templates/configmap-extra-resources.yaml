@@ -1,0 +1,127 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: configmap-extra-resources
+parameters:
+- name: JUPYTERHUB_NAMESPACE
+  value: ""
+  required: true
+- name: JUPYTERHUB_APPLICATION
+  value: ""
+  required: true
+objects:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${JUPYTERHUB_APPLICATION}-res
+    namespace: ${JUPYTERHUB_NAMESPACE}
+    labels:
+      app: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}
+      spawner: learning-portal
+  data:
+    extra_resources.yaml: |-
+      kind: List
+      apiVersion: v1
+      items:
+      - kind: ImageStream
+        apiVersion: image.openshift.io/v1
+        metadata:
+          name: kopf-base
+          labels:
+            build: kopf-base
+      - kind: BuildConfig
+        apiVersion: build.openshift.io/v1
+        metadata:
+          name: kopf-base
+          labels:
+            build: kopf-base
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: kopf-base:latest
+          source:
+            type: Binary
+            binary: {}
+          strategy:
+            type: Docker
+            dockerStrategy: {}
+      - kind: ServiceAccount
+        apiVersion: v1
+        metadata:
+          name: dropper-operator
+          labels:
+            app: dropper-operator
+      - kind: RoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: dropper-operator
+          labels:
+            app: dropper-operator
+        subjects:
+        - kind: ServiceAccount
+          name: dropper-operator
+          namespace: "${project_namespace}"
+        roleRef:
+          kind: ClusterRole
+          apiGroup: rbac.authorization.k8s.io
+          name: dropper-operator-namespaced
+      - kind: ImageStream
+        apiVersion: image.openshift.io/v1
+        metadata:
+          name: dropper-operator
+          labels:
+            app: dropper-operator
+      - kind: BuildConfig
+        apiVersion: build.openshift.io/v1
+        metadata:
+          name: dropper-operator
+          labels:
+            app: dropper-operator
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: dropper-operator:latest
+          source:
+            type: Binary
+            binary: {}
+          strategy:
+            type: Source
+            sourceStrategy:
+              from:
+                kind: ImageStreamTag
+                name: kopf-base:latest
+      - kind: DeploymentConfig
+        apiVersion: apps.openshift.io/v1
+        metadata:
+          name: dropper-operator
+          labels:
+            app: dropper-operator
+        spec:
+          replicas: 1
+          selector:
+            app: dropper-operator
+            deploymentconfig: dropper-operator
+          strategy:
+            type: Recreate
+          template:
+            metadata:
+              labels:
+                app: dropper-operator
+                deploymentconfig: dropper-operator
+            spec:
+              containers:
+              - name: dropper-operator
+                image: dropper-operator:latest
+              serviceAccountName: dropper-operator
+          triggers:
+          - type: ConfigChange
+          - type: ImageChange
+            imageChangeParams:
+              automatic: true
+              containerNames:
+              - dropper-operator
+              from:
+                kind: ImageStreamTag
+                name: dropper-operator:latest

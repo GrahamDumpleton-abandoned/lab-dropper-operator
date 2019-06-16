@@ -1,0 +1,17 @@
+kind: TemplateBinding
+apiVersion: homeroom.openshift.dev/v1
+metadata:
+  name: myapplication
+spec:
+  template:
+    frontend-plus-database
+  parameters:
+  - name: NAME
+    valueFrom:
+        fieldRef:
+            fieldPath: metadata.name
+  - name: DATABASE_PASSWORD
+    valueFrom:
+        secretKeyRef:
+            name: mongodb-credentials
+            key: MONGODB_PASSWORD

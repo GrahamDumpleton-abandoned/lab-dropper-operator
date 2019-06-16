@@ -1,0 +1,37 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: clusterroles-spawner-rules
+parameters:
+- name: JUPYTERHUB_NAMESPACE
+  value: ""
+  required: true
+- name: JUPYTERHUB_APPLICATION
+  value: ""
+  required: true
+objects:
+- apiVersion: authorization.openshift.io/v1
+  kind: ClusterRole
+  metadata:
+    labels:
+      app: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}
+      spawner: learning-portal
+    name: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}-spawner-rules
+  rules:
+  - apiGroups:
+    - ""
+    - authorization.openshift.io
+    - rbac.authorization.k8s.io
+    resourceNames:
+    - dropper-operator-namespaced
+    resources:
+    - clusterroles
+    verbs:
+    - bind
+  - apiGroups:
+    - ""
+    - "events.k8s.io"
+    resources:
+    - events
+    verbs:
+    - create

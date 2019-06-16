@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -x
+
+trap 'kill -TERM $PID' TERM INT
+
+start-kopf-standalone.sh &
+
+PID=$!
+wait $PID
+trap - TERM INT
+wait $PID
+STATUS=$?
+exit $STATUS

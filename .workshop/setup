@@ -1,0 +1,3 @@
+#!/bin/bash
+
+oc start-build kopf-base --from-dir kopf-base

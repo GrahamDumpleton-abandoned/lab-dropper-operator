@@ -1,0 +1,10 @@
+kind: TemplateBinding
+apiVersion: homeroom.openshift.dev/v1
+metadata:
+  name: mongodb-alpha
+spec:
+  template:
+    mongodb-ephemeral
+  parameters:
+  - name: DATABASE_SERVICE_NAME
+    value: mongodb-alpha

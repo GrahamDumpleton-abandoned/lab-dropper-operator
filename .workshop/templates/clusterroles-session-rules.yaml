@@ -1,0 +1,26 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: clusterroles-session-rules
+parameters:
+- name: JUPYTERHUB_NAMESPACE
+  value: ""
+  required: true
+- name: JUPYTERHUB_APPLICATION
+  value: ""
+  required: true
+objects:
+- apiVersion: authorization.openshift.io/v1
+  kind: ClusterRole
+  metadata:
+    labels:
+      app: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}
+      spawner: learning-portal
+    name: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}-session-rules
+  rules:
+  - apiGroups:
+    - homeroom.openshift.dev
+    resources:
+    - templatebindings
+    verbs:
+    - "*"

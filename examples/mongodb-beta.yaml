@@ -1,0 +1,12 @@
+kind: TemplateBinding
+apiVersion: homeroom.openshift.dev/v1
+metadata:
+  name: mongodb-beta
+spec:
+  template:
+    mongodb-ephemeral
+  parameters:
+  - name: DATABASE_SERVICE_NAME
+    valueFrom:
+        fieldRef:
+            fieldPath: metadata.name
