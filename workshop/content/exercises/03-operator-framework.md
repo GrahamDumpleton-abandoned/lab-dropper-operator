@@ -20,13 +20,11 @@ from templates import process_template
 from resources import create_resources
 
 @kopf.on.create('homeroom.openshift.dev', 'v1', 'templatebindings')
-def create(name, namespace, body, meta, spec, logger, **_):
+def create(name, namespace, uid, spec, logger, **_):
     logger.info('CREATE: %s %s', name, spec)
-
     params = parse_parameters(name, namespace, spec.get("parameters", []))
     resources = process_template(spec["template"], params, logger)
-    items = create_resources(resources, meta['uid'], logger)
-
+    items = create_resources(resources, uid, logger)
     return { 'resources-created': len(items) }
 ```
 
@@ -36,7 +34,7 @@ In this operator we only care about the notification for when a custom resource 
 import kopf
 
 @kopf.on.create('homeroom.openshift.dev', 'v1', 'templatebindings')
-def create(name, namespace, body, meta, spec, logger, **_):
+def create(name, namespace, uid, spec, logger, **_):
     return {}
 ```
 
