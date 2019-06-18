@@ -105,7 +105,7 @@ You will see it create `templatebindings/myapplication`, but as the template it 
 oc get templatebindings -o name
 ```
 
-The end result is the MongoDB template will be instantiated twice. The one which which are using to pretend is the frontend, and that for the actual database backend. Run:
+The end result is the MongoDB template will be instantiated twice. The one which we are using to pretend is the frontend, and that for the actual database backend. Run:
 
 ```execute
 oc get all -o name
