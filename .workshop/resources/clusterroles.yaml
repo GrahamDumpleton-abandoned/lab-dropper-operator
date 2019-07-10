@@ -37,9 +37,9 @@ rules:
   - patch
   - update
 - apiGroups:
-  - homeroom.openshift.dev
+  - example.openshift.dev
   resources:
-  - templatebindings
+  - droppers
   verbs:
   - get
   - list

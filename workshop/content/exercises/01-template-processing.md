@@ -1,12 +1,6 @@
----
-Title: Template Processing
-PrevPage: ../setup
-NextPage: 02-deleting-resources
----
+The purpose of the operator is to process OpenShift templates and to create the resources generated from the template. This is triggered by creating a custom resource, which lists the name of the template and the parameters. The name of the custom resource type is `Dropper`.
 
-The purpose of the operator is to process OpenShift templates and to create the resources generated from the template. This is triggered by creating a custom resource, which lists the name of the template and the parameters. The name of the custom resource type is `TemplateBinding`.
-
-Lets start with a quick example using an existing template provided by OpenShift. The definition for our instance of the `TemplateBinding` resource can be seen by running:
+Lets start with a quick example using an existing template provided by OpenShift. The definition for our instance of the `Dropper` resource can be seen by running:
 
 ```execute
 cat examples/mongodb-alpha.yaml
@@ -15,8 +9,8 @@ cat examples/mongodb-alpha.yaml
 You should see:
 
 ```
-kind: TemplateBinding
-apiVersion: homeroom.openshift.dev/v1
+kind: Dropper
+apiVersion: example.openshift.dev/v1
 metadata:
   name: mongodb-alpha
 spec:
@@ -33,7 +27,7 @@ Now run:
 oc apply -f examples/mongodb-alpha.yaml
 ```
 
-This creates the resource `templatebinding/mongodb-alpha`.
+This creates the resource `dropper/mongodb-alpha`.
 
 It also though triggers the deployment of a MongoDB database using the `mongodb-ephemeral` template.
 

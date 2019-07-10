@@ -1,5 +1,5 @@
-kind: TemplateBinding
-apiVersion: homeroom.openshift.dev/v1
+kind: Dropper
+apiVersion: example.openshift.dev/v1
 metadata:
   name: mongodb-beta
 spec:

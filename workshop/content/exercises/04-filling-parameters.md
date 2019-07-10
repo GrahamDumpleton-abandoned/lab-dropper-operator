@@ -1,9 +1,3 @@
----
-Title: Filling Parameters
-PrevPage: 03-operator-framework
-NextPage: 05-external-parameters
----
-
 The operator code isn't too complex, and there is still more magic it can do.
 
 The first is that template parameters given in the custom resource don't need to be literal values. The parameters can also be filled in with certain values using the downward API mechanism used elsewhere in OpenShift, or by referencing values from a config map or secret.
@@ -17,8 +11,8 @@ cat examples/mongodb-beta.yaml
 You should see:
 
 ```
-kind: TemplateBinding
-apiVersion: homeroom.openshift.dev/v1
+kind: Dropper
+apiVersion: example.openshift.dev/v1
 metadata:
   name: mongodb-beta
 spec:
@@ -50,5 +44,5 @@ and you should see that the deployment this time is named `mongodb-beta`.
 Delete it when done looking.
 
 ```execute
-oc delete templatebinding/mongodb-beta
+oc delete dropper/mongodb-beta
 ```

@@ -1,0 +1,22 @@
+modules:
+    demo-overview:
+        name: Demo Overview
+        exit_sign: Setup Environment
+    setup-environment:
+        name: Setup Environment
+        exit_sign: Start Demo
+    exercises/01-template-processing:
+        name: Template Processing
+    exercises/02-deleting-resources:
+        name: Deleting Resources
+    exercises/03-operator-framework:
+        name: Operator Framework
+    exercises/04-filling-parameters:
+        name: Filling Parameters
+    exercises/05-external-parameters:
+        name: External Parameters
+    exercises/06-multiple-templates:
+        name: Multiple Templates
+    demo-summary:
+        name: Demo Summary
+        exit_sign: Finish Demo

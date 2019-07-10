@@ -2,4 +2,4 @@
 
 set -x
 
-oc delete crd templatebindings.homeroom.openshift.dev
+oc delete crd droppers.example.openshift.dev

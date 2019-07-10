@@ -1,11 +1,3 @@
----
-Sort: 2
-Title: Demo Setup
-PrevPage: index
-NextPage: exercises/01-template-processing
-ExitSign: Start Demo
----
-
 Before we can start, we need to wait for the build of an S2I enabled `kopf` base image to complete. This S2I builder image will be used to build the operator. To monitor the build, run:
 
 ```execute

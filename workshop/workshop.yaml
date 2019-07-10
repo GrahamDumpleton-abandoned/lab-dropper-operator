@@ -1,0 +1,13 @@
+name: The Dropper Operator
+    
+modules:
+    activate:
+    - demo-overview
+    - setup-environment
+    - exercises/01-template-processing
+    - exercises/02-deleting-resources
+    - exercises/03-operator-framework
+    - exercises/04-filling-parameters
+    - exercises/05-external-parameters
+    - exercises/06-multiple-templates
+    - demo-summary

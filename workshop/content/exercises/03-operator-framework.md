@@ -1,9 +1,3 @@
----
-Title: Operator Framework
-PrevPage: 02-deleting-resources
-NextPage: 04-filling-parameters
----
-
 The operator is built using the operator framework `kopf`. To see the main code file for the operator, which defines the handlers which are invoked by the framework, run:
 
 ```execute
@@ -19,7 +13,7 @@ from parameters import parse_parameters
 from templates import process_template
 from resources import create_resources
 
-@kopf.on.create('homeroom.openshift.dev', 'v1', 'templatebindings')
+@kopf.on.create('example.openshift.dev', 'v1', 'droppers')
 def create(name, namespace, uid, spec, logger, **_):
     logger.info('CREATE: %s %s', name, spec)
     params = parse_parameters(name, namespace, spec.get("parameters", []))
@@ -33,7 +27,7 @@ In this operator we only care about the notification for when a custom resource 
 ```
 import kopf
 
-@kopf.on.create('homeroom.openshift.dev', 'v1', 'templatebindings')
+@kopf.on.create('example.openshift.dev', 'v1', 'droppers')
 def create(name, namespace, uid, spec, logger, **_):
     return {}
 ```

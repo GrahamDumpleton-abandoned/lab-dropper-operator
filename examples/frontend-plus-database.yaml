@@ -10,8 +10,8 @@ parameters:
   generate: expression
   required: true
 objects:
-- kind: TemplateBinding
-  apiVersion: homeroom.openshift.dev/v1
+- kind: Dropper
+  apiVersion: example.openshift.dev/v1
   metadata:
     name: ${NAME}-frontend
   spec:
@@ -22,8 +22,8 @@ objects:
       value: ${NAME}-frontend
     - name: MONGODB_PASSWORD
       value: ${DATABASE_PASSWORD}
-- kind: TemplateBinding
-  apiVersion: homeroom.openshift.dev/v1
+- kind: Dropper
+  apiVersion: example.openshift.dev/v1
   metadata:
     name: ${NAME}-backend
   spec:

@@ -19,8 +19,8 @@ objects:
     name: ${JUPYTERHUB_APPLICATION}-${JUPYTERHUB_NAMESPACE}-session-rules
   rules:
   - apiGroups:
-    - homeroom.openshift.dev
+    - example.openshift.dev
     resources:
-    - templatebindings
+    - droppers
     verbs:
     - "*"

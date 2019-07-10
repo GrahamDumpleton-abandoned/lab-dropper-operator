@@ -1,9 +1,3 @@
----
-Title: External Parameters
-PrevPage: 04-filling-parameters
-NextPage: 06-multiple-templates
----
-
 Parameters can also be filled from separate config maps or secrets.
 
 Create a config map by running:
@@ -27,8 +21,8 @@ cat examples/mongodb-gamma.yaml
 You should see:
 
 ```
-kind: TemplateBinding
-apiVersion: homeroom.openshift.dev/v1
+kind: Dropper
+apiVersion: example.openshift.dev/v1
 metadata:
   name: mongodb-gamma
 spec:
@@ -72,5 +66,5 @@ This should bring up the deployment config. Scroll down and verify the memory is
 Delete it again:
 
 ```execute
-oc delete templatebinding/mongodb-gamma
+oc delete dropper/mongodb-gamma
 ```
