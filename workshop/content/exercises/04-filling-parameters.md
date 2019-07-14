@@ -1,6 +1,6 @@
 The operator code isn't too complex, and there is still more magic it can do.
 
-The first is that template parameters given in the custom resource don't need to be literal values. The parameters can also be filled in with certain values using a downward API like mechanism as implemented for other builtin resource types, or by referencing values from a config map or secret.
+The first is that template parameters given in the custom resource don't need to be literal values. The parameters can also be filled in with values using a downward API like mechanism as implemented for other builtin resource types, including being able to reference values from a config map or secret.
 
 An example of using downward API mechanism can be found by running:
 

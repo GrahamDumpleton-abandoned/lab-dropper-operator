@@ -86,7 +86,7 @@ Create this:
 oc apply -f examples/application.yaml
 ```
 
-You will see it create `templatebinding/application`, but as the template it triggers in turn contains the `TemplateBinding` resources, that triggers those as well. To see them all, run:
+You will see it create `templatebinding/application`, but as the template in turn contains the `TemplateBinding` resources, that triggers those as well. To see them all, run:
 
 ```execute
 oc get templatebindings -o name
@@ -98,7 +98,7 @@ The end result is the frontend and database template will be instantiated. Run:
 oc get all -o name
 ```
 
-and you should see deployments and other resources corresponding to both the frontend and backend.
+and you should see deployments and other resources corresponding to both the frontend, called `application`, and the database called `application-database`.
 
 To delete everything create from all the templates, we only need delete the top level custom resource.
 
