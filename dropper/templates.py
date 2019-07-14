@@ -130,31 +130,22 @@ template_resource = client.resources.get(api_version="template.openshift.io/v1",
 
 def process_template(name, params, logger):
     try:
-        resource = template_resource.get(namespace=namespace, name=name)
+        project, name = name.split('/', 1)
+    except ValueError:
+        project = namespace
+
+    try:
+        resource = template_resource.get(namespace=project, name=name)
 
     except ApiException as e:
         if e.status != 404:
-            logger.exception('Error loading local template %s.', name)
+            logger.exception('Error loading template %s from %s.', (name, project))
             raise
 
     except Exception as e:
-        logger.exception('Error loading local template %s.', name)
-        raise
-
-    else:
-        template = Template(resource.to_dict())
-        return template.expand(params)
-
-    try:
-        resource = template_resource.get(namespace="openshift", name=name)
-
-    except ApiException as e:
-        logger.exception('Error loading openshift template %s.', name)
-        raise
-
-    except Exception as e:
-        logger.exception('Error loading openshift template %s.', name)
+        logger.exception('Error loading template %s from %s.', (name, project))
         raise
 
     template = Template(resource.to_dict())
+
     return template.expand(params)

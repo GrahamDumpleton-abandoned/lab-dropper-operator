@@ -21,6 +21,9 @@ objects:
   - apiGroups:
     - example.openshift.dev
     resources:
-    - droppers
+    - templatebindings
     verbs:
-    - "*"
+    - get
+    - list
+    - create
+    - delete

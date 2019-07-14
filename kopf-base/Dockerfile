@@ -19,7 +19,7 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
 RUN virtualenv ${APP_ROOT} && \
     source ${APP_ROOT}/bin/activate && \
     pip install -U pip setuptools wheel && \
-    pip install kopf==0.14 openshift==0.9.0a3 && \
+    pip install kopf==0.18 openshift==0.9.0 && \
     chown -R 1001:0 ${APP_ROOT} && \
     fix-permissions ${APP_ROOT} -P
 

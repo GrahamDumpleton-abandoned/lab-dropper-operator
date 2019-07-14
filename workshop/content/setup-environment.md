@@ -22,7 +22,7 @@ The operator when running reacts to the creation of a custom resource. The custo
 cat .workshop/resources/customresourcedefinitions.yaml
 ```
 
-Because the operator is going to need to create resources, it runs with its own service account which has been granted the roles it needs. To See the roles it has been granted, run:
+Because the operator is going to need to create resources, it runs with its own service account which has been granted the roles it needs. To see the roles it has been granted, run:
 
 ```execute
 cat .workshop/resources/clusterroles.yaml

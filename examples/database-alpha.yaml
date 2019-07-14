@@ -1,0 +1,10 @@
+kind: TemplateBinding
+apiVersion: example.openshift.dev/v1
+metadata:
+  name: database-alpha
+spec:
+  template:
+    database
+  parameters:
+  - name: APPLICATION_NAME
+    value: database-alpha

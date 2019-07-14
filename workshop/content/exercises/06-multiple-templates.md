@@ -1,13 +1,9 @@
-OpenShift doesn't provide a way of easily deploying multiple templates at the same time which share parameters.
+OpenShift doesn't provide a way of easily deploying multiple templates at the same time which share parameters. You are forced to do them separately, or create a single template which duplicates parts from each. You don't have a library of templates which could be used as building blocks to create a larger application consisting of multiple components. With this operator you could.
 
-Thus, rather than have a template for deploying a web front end using an S2I builder image, and another for deploying a database, and processing both at the same time to create a combined deployment, you are forced to do them separately, or create a single template which duplicates parts from each. You don't have a library of templates which could be used as building blocks to create a larger application consisting of multiple components. With this operator you could.
-
-Since there aren't existing templates for triggering S2I builder based applications, well use MongoDB again, but deploy two instances of it. Just pretend one usage of it represents the non existent template for deploying a web application using an S2I builder.
-
-For this we will create a template which you can see by running:
+For this example we will use the `frontend-plus-database` template which you loaded earlier:
 
 ```execute
-cat examples/frontend-plus-database.yaml
+cat templates/frontend-plus-database.yaml
 ```
 
 You should see:
@@ -18,97 +14,94 @@ apiVersion: template.openshift.io/v1
 metadata:
   name: frontend-plus-database
 parameters:
-- name: NAME
-  value: myapplication
+- name: APPLICATION_NAME
+  value: application
+- name: DATABASE_USERNAME
+  from: "user[a-f0-9]{8}"
+  generate: expression
 - name: DATABASE_PASSWORD
   from: '[a-zA-Z0-9]{16}'
   generate: expression
-  required: true
 objects:
-- kind: Dropper
+- kind: TemplateBinding
   apiVersion: example.openshift.dev/v1
   metadata:
-    name: ${NAME}-frontend
+    name: ${APPLICATION_NAME}-frontend
   spec:
     template:
-      mongodb-ephemeral
+      frontend
     parameters:
-    - name: DATABASE_SERVICE_NAME
-      value: ${NAME}-frontend
-    - name: MONGODB_PASSWORD
+    - name: APPLICATION_NAME
+      value: ${APPLICATION}
+    - name: DATABASE_URL
+      value: postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${APPLICATION_NAME}-database:5432/blog
+    - name: DATABASE_USERNAME
+      value: ${DATABASE_USERNAME}
+    - name: DATABASE_PASSWORD
       value: ${DATABASE_PASSWORD}
-- kind: Dropper
+- kind: TemplateBinding
   apiVersion: example.openshift.dev/v1
   metadata:
-    name: ${NAME}-backend
+    name: ${APPLICATION_NAME}-database
   spec:
     template:
-      mongodb-ephemeral
+      database
     parameters:
-    - name: DATABASE_SERVICE_NAME
-      value: ${NAME}-database
-    - name: MONGODB_PASSWORD
+    - name: APPLICATION_NAME
+      value: ${APPLICATION}-database
+    - name: DATABASE_USERNAME
+      value: ${DATABASE_USERNAME}
+    - name: DATABASE_PASSWORD
       value: ${DATABASE_PASSWORD}
 ```
 
-Create the template.
+As you can see, the `Template` is creating multiple instances of the `TemplateBinding` resource. When instantiated that will in turn trigger the instantiation of the further two templates.
+
+Next we need the custom resource for creating our application using this template. You can see it by running:
 
 ```execute
-oc apply -f examples/frontend-plus-database.yaml
-```
-
-This loads it into the project but doesn't process it. The idea here is that this would be something that would pre-exist in your template catalog that you could use.
-
-With this existing, we next need our custom resource for creating our application. You can see it by running:
-
-```execute
-cat examples/myapplication.yaml
+cat examples/application.yaml
 ```
 
 You should see:
 
 ```
-kind: Dropper
+kind: TemplateBinding
 apiVersion: example.openshift.dev/v1
 metadata:
-  name: myapplication
+  name: application
 spec:
   template:
     frontend-plus-database
   parameters:
-  - name: NAME
+  - name: APPLICATION_NAME
     valueFrom:
         fieldRef:
             fieldPath: metadata.name
-  - name: DATABASE_PASSWORD
-    valueFrom:
-        secretKeyRef:
-            name: mongodb-credentials
-            key: MONGODB_PASSWORD
 ```
 
 Create this:
 
 ```execute
-oc apply -f examples/myapplication.yaml
+oc apply -f examples/application.yaml
 ```
 
-You will see it create `droppers/myapplication`, but as the template it triggers in turn contains further instances of `Dropper`, that triggers those as well. To see them all, run:
+You will see it create `templatebinding/application`, but as the template it triggers in turn contains the `TemplateBinding` resources, that triggers those as well. To see them all, run:
 
 ```execute
-oc get droppers -o name
+oc get templatebindings -o name
 ```
 
-The end result is the MongoDB template will be instantiated twice. The one which we are using to pretend is the frontend, and that for the actual database backend. Run:
+The end result is the frontend and database template will be instantiated. Run:
 
 ```execute
 oc get all -o name
 ```
 
-and you should see deployments and other resources corresponding to both the front end and backend.
+and you should see deployments and other resources corresponding to both the frontend and backend.
 
 To delete everything create from all the templates, we only need delete the top level custom resource.
 
 ```execute
-oc delete dropper/myapplication
+oc delete templatebinding/application
 ```

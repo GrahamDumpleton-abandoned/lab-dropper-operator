@@ -1,46 +1,64 @@
-The purpose of the operator is to process OpenShift templates and to create the resources generated from the template. This is triggered by creating a custom resource, which lists the name of the template and the parameters. The name of the custom resource type is `Dropper`.
+The purpose of the operator is to process OpenShift templates and to create the resources generated from the template. This is triggered by creating a custom resource, which lists the name of the template and the parameters. The name of the custom resource type is `TemplateBinding`.
 
-Lets start with a quick example using an existing template provided by OpenShift. The definition for our instance of the `Dropper` resource can be seen by running:
+For the purposes of demonstrating the operator in action, we are going to first load some OpenShift templates into our project.
 
 ```execute
-cat examples/mongodb-alpha.yaml
+oc apply --recursive -f templates/
+```
+
+This will result in the following templates being created.
+
+* frontend
+* database
+* frontend-plus-database
+
+Let's instantiate an instance of the database template. To see a description of the template, including the template parameters it accepts, run:
+
+```execute
+oc describe template/database
+```
+
+The definition for our instance of the `TemplateBinding` resource, which will be used to trigger the instantiation of the template, can be seen by running:
+
+```execute
+cat examples/database-alpha.yaml
 ```
 
 You should see:
 
 ```
-kind: Dropper
+kind: TemplateBinding
 apiVersion: example.openshift.dev/v1
 metadata:
-  name: mongodb-alpha
+  name: database-alpha
 spec:
   template:
-    mongodb-ephemeral
+    database
   parameters:
-  - name: DATABASE_SERVICE_NAME
-    value: mongodb-alpha
+  - name: APPLICATION_NAME
+    value: database-alpha
 ```
 
 Now run:
 
 ```execute
-oc apply -f examples/mongodb-alpha.yaml
+oc apply -f examples/database-alpha.yaml
 ```
 
-This creates the resource `dropper/mongodb-alpha`.
+This creates the resource `templatebinding/database-alpha`.
 
-It also though triggers the deployment of a MongoDB database using the `mongodb-ephemeral` template.
+It also though triggers the deployment of a database using the `database` template.
 
-To see all the resources we currently have in the project run:
+To see all the resources we now have in the project run:
 
 ```execute
 oc get all -o name
 ```
 
-You can monitor the progress of the MongoDB database deployment by running:
+You can monitor the progress of the database deployment by running:
 
 ```execute
-oc rollout status dc/mongodb-alpha
+oc rollout status dc/database-alpha
 ```
 
-Note how the deployment name has been dictated by the value supplied for `DATABASE_SERVICE_NAME` in the custom resource we created.
+Note how the deployment name has been dictated by the value supplied for `APPLICATION_NAME` in the custom resource we created.

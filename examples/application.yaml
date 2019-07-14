@@ -1,0 +1,12 @@
+kind: TemplateBinding
+apiVersion: example.openshift.dev/v1
+metadata:
+  name: application
+spec:
+  template:
+    frontend-plus-database
+  parameters:
+  - name: APPLICATION_NAME
+    valueFrom:
+        fieldRef:
+            fieldPath: metadata.name

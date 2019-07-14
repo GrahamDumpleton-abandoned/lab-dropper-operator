@@ -1,0 +1,27 @@
+kind: TemplateBinding
+apiVersion: example.openshift.dev/v1
+metadata:
+  name: database-gamma
+spec:
+  template:
+    database
+  parameters:
+  - name: APPLICATION_NAME
+    valueFrom:
+        fieldRef:
+            fieldPath: metadata.name
+  - name: DATABASE_MEMORY
+    valueFrom:
+        configMapKeyRef:
+            name: database-settings
+            key: DATABASE_MEMORY
+  - name: DATABASE_USERNAME
+    valueFrom:
+        secretKeyRef:
+            name: database-credentials
+            key: DATABASE_USERNAME
+  - name: DATABASE_PASSWORD
+    valueFrom:
+        secretKeyRef:
+            name: database-credentials
+            key: DATABASE_PASSWORD

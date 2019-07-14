@@ -1,12 +1,12 @@
-kind: Dropper
+kind: TemplateBinding
 apiVersion: example.openshift.dev/v1
 metadata:
-  name: mongodb-beta
+  name: database-beta
 spec:
   template:
-    mongodb-ephemeral
+    database
   parameters:
-  - name: DATABASE_SERVICE_NAME
+  - name: APPLICATION_NAME
     valueFrom:
         fieldRef:
             fieldPath: metadata.name

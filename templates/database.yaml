@@ -1,0 +1,105 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: database
+parameters:
+- name: APPLICATION_NAME
+  value: database
+  required: true
+- name: DATABASE_USERNAME
+  from: "user[a-f0-9]{8}"
+  generate: expression
+- name: DATABASE_PASSWORD
+  from: "[a-zA-Z0-9]{12}"
+  generate: expression
+- name: DATABASE_MEMORY
+  value: 512Mi
+  required: true
+objects:
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}-secrets"
+    labels:
+      app: "${APPLICATION_NAME}"
+  stringData:
+    DATABASE_USERNAME: "${DATABASE_USERNAME}"
+    DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
+  spec:
+    strategy:
+      type: Recreate
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: postgresql:10
+    replicas: 1
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
+    template:
+      metadata:
+        labels:
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
+      spec:
+        containers:
+        - name: postgresql
+          image: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+            exec:
+              command:
+              - "/usr/libexec/check-container"
+          livenessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 5432
+          resources:
+            limits:
+              memory: ${DATABASE_MEMORY}
+          env:
+          - name: POSTGRESQL_DATABASE
+            value: blog
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: "${APPLICATION_NAME}-secrets"
+                key: DATABASE_USERNAME
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "${APPLICATION_NAME}-secrets"
+                key: DATABASE_PASSWORD
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
+  spec:
+    ports:
+    - name: 5432-tcp
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"

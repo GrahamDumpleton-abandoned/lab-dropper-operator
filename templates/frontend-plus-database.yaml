@@ -1,0 +1,44 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: frontend-plus-database
+parameters:
+- name: APPLICATION_NAME
+  value: application
+- name: DATABASE_USERNAME
+  from: "user[a-f0-9]{8}"
+  generate: expression
+- name: DATABASE_PASSWORD
+  from: '[a-zA-Z0-9]{16}'
+  generate: expression
+objects:
+- kind: TemplateBinding
+  apiVersion: example.openshift.dev/v1
+  metadata:
+    name: ${APPLICATION_NAME}-frontend
+  spec:
+    template:
+      frontend
+    parameters:
+    - name: APPLICATION_NAME
+      value: ${APPLICATION_NAME}
+    - name: DATABASE_URL
+      value: postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${APPLICATION_NAME}-database:5432/blog
+    - name: DATABASE_USERNAME
+      value: ${DATABASE_USERNAME}
+    - name: DATABASE_PASSWORD
+      value: ${DATABASE_PASSWORD}
+- kind: TemplateBinding
+  apiVersion: example.openshift.dev/v1
+  metadata:
+    name: ${APPLICATION_NAME}-database
+  spec:
+    template:
+      database
+    parameters:
+    - name: APPLICATION_NAME
+      value: ${APPLICATION_NAME}-database
+    - name: DATABASE_USERNAME
+      value: ${DATABASE_USERNAME}
+    - name: DATABASE_PASSWORD
+      value: ${DATABASE_PASSWORD}

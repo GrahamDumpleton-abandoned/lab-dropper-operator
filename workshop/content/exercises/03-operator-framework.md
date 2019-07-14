@@ -13,7 +13,7 @@ from parameters import parse_parameters
 from templates import process_template
 from resources import create_resources
 
-@kopf.on.create('example.openshift.dev', 'v1', 'droppers')
+@kopf.on.create('example.openshift.dev', 'v1', 'templatebindings')
 def create(name, namespace, uid, spec, logger, **_):
     logger.info('CREATE: %s %s', name, spec)
     params = parse_parameters(name, namespace, spec.get("parameters", []))
@@ -27,7 +27,7 @@ In this operator we only care about the notification for when a custom resource 
 ```
 import kopf
 
-@kopf.on.create('example.openshift.dev', 'v1', 'droppers')
+@kopf.on.create('example.openshift.dev', 'v1', 'templatebindings')
 def create(name, namespace, uid, spec, logger, **_):
     return {}
 ```
