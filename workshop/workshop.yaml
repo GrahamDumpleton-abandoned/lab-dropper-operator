@@ -2,7 +2,7 @@ name: The Dropper Operator
     
 modules:
     activate:
-    - demo-overview
+    - workshop-overview
     - setup-environment
     - exercises/01-template-processing
     - exercises/02-deleting-resources
@@ -10,4 +10,4 @@ modules:
     - exercises/04-filling-parameters
     - exercises/05-external-parameters
     - exercises/06-multiple-templates
-    - demo-summary
+    - workshop-summary

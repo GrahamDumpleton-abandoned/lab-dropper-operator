@@ -1,6 +1,6 @@
 modules:
-    demo-overview:
-        name: Demo Overview
+    workshop-overview:
+        name: Workshop Overview
         exit_sign: Setup Environment
     setup-environment:
         name: Setup Environment
@@ -17,6 +17,6 @@ modules:
         name: External Parameters
     exercises/06-multiple-templates:
         name: Multiple Templates
-    demo-summary:
-        name: Demo Summary
+    workshop-summary:
+        name: Workshop Summary
         exit_sign: Finish Demo
