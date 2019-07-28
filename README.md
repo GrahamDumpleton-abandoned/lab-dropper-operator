@@ -78,7 +78,7 @@ To delete the build configuration for the workshop image, run:
 ./.workshop/scripts/delete-workshop.sh
 ```
 
-To delete special resources for CRDs and cluster roles for the Postgres operator, run:
+To delete special resources for CRDs and cluster roles for the workshop, run:
 
 ```
 ./.workshop/scripts/delete-resources.sh
